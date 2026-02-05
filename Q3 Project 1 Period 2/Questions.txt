@@ -1,3 +1,24 @@
 Questions:
 
 Write as many questions as you can based on the project specs.
+
+Will we have to use hashmaps for this project? C
+When is this project due? C
+Will we have to use recursion in a way to test all the paths? O
+How many mazes will we have to work with? C
+Is it possible or the Wolverine to die and restart the maze? C
+Is the project as simple as reading the next string? C
+Why do we have to use queue and stack if they are just ArrayLists? O
+Will the user be controlling the Wolverine? C
+What methods should we use to store one route and not test it again? O
+Are we given the test cases needed to pass? C
+How will he coordinate system be implemented to understand the position of Wolverine? O
+Can we randomize hundreds of paths that end wih $ where we can filter out paths already used and find the shortest? O
+How collaborative is this project? O
+Is this project a similar difficulty level as the frogger project? C
+Is this project advanced in content or just advanced in how we use content we already know? O
+Will we have to work on this project outside of class, and if so how many hours? C
+
+What question(s) did you generate that can be better (get to real answers or understanding) by rewording them to be open-ended or closed? 
+I think I can use more project specific terms in my questions that help narrow down what I am asking. 
+This provides for more knowledge to work with and a better understanding. By rewording one-word answer questions to be opn-ended, I can also get more information.
