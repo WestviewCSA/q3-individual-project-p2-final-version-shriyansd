@@ -46,7 +46,18 @@ public class Reader {
 			maps = scan.next();
 			
 			while(scan.hasNext()) {
-				textBased.add(scan.next());
+				
+				String temp = scan.next();
+				
+				if(!temp.matches("[.$W@]+")){
+					System.out.println("There is an invalid character");
+					Queue<String> empty = new ArrayDeque<>();
+					return empty;
+				}else {
+					textBased.add(temp);
+				}
+				
+
 			}
 			
 			
