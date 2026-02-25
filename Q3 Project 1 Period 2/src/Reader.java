@@ -91,7 +91,19 @@ public class Reader {
 			while(scan.hasNext()) {
 				
 				String character = scan.next();
-				cordBased[Integer.parseInt(scan.next())][Integer.parseInt(scan.next())] = character;
+				int rowC = Integer.parseInt(scan.next());
+				int colC = Integer.parseInt(scan.next());
+				
+				
+				if(rowC >= Integer.parseInt(rows) || colC >= Integer.parseInt(columns)) {
+					System.out.println("Coordinates don't match the given specs");
+					String[][] empty = new String[0][0];
+					return empty;	
+					
+				}
+				
+				
+				cordBased[rowC][colC] = character;
 				scan.next();
 			}
 			
