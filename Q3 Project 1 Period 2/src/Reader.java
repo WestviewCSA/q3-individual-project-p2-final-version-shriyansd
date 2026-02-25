@@ -102,7 +102,6 @@ public class Reader {
 					
 				}
 				
-				
 				cordBased[rowC][colC] = character;
 				scan.next();
 			}
