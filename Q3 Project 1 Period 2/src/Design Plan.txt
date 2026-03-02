@@ -1,0 +1,18 @@
+Shriyans Dharajula
+Wolverine project
+3/22/2026
+Submitted late becasue of absence
+
+Week 3:
+   - Polish queue getText method (get and store data)
+   - Polish array getChords method (get and store data)
+   - Start writing code for the queue based method to get route
+   - Start writing code for the stack based method to get route
+Week 4:
+   - Finish queue based approach to get route
+   - Finish stack based approach to get route
+   - Test approaches with various maps to fine tune
+Week 5: 
+   - Implement various error checks for the approaches
+   - Polish project code (simplify as best as possible)
+   - Submit project after going through and checking to see if I have everything
