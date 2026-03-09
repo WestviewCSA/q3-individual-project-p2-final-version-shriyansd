@@ -9,11 +9,14 @@ public class Reader {
 
 	public static void main(String[] args) {
 		
-		Queue text = getText("Easy_Map_2");
-		
-		while(!text.isEmpty()) {
-			System.out.println(text.poll());
+		String[][] maze = getText("Easy_Map_2");
+		for(int i = 0; i < maze.length; i++) {
+		    for(int j = 0; j < maze[0].length; j++) {
+		        System.out.print(maze[i][j]);
+		    }
+		    System.out.println();
 		}
+		
 		
 		System.out.println("");
 		
@@ -26,46 +29,41 @@ public class Reader {
 			System.out.println();
 		}
 		
+		
 
 	}
 	
-	public static Queue<String> getText(String passedFile) {
+	public static String[][] getText(String passedFile) {
 		
-		
-		Queue<String> textBased = new ArrayDeque<>();
 		File fileObj = new File(passedFile);
 		try {
-			
-			
-			String rows = "";		
-			String columns = "";
-			String maps = "";
+				
 			Scanner scan = new Scanner(fileObj);
-			rows = scan.next();
-			columns = scan.next();
-			maps = scan.next();
+			
+			int rows = Integer.parseInt(scan.next());
+			int cols = Integer.parseInt(scan.next());
+			int maps = Integer.parseInt(scan.next());
+			
+			String[][] maze = new String[rows][cols];
+			
+			int currentRow = 0;
 			
 			while(scan.hasNext()) {
-				
-				String temp = scan.next();
-				
-				if(!temp.matches("[.$W@]+")){
-					System.out.println("There is an invalid character");
-					Queue<String> empty = new ArrayDeque<>();
-					return empty;
-				}else {
-					textBased.add(temp);
+				String line = scan.next();
+				for(int col = 0; col < line.length(); col++) {
+					maze[currentRow][col] = String.valueOf(line.charAt(col));
 				}
-				
-
+				currentRow++;
 			}
+			
+			return maze;
 			
 			
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
 		
-		return textBased;
+		return null;
 
 	}
 	
