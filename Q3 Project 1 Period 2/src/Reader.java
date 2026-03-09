@@ -17,6 +17,12 @@ public class Reader {
 		    System.out.println();
 		}
 		
+		Queue<int[]> visited = queueSearch(maze);
+		while(!visited.isEmpty()) {
+		    int[] pos = visited.poll();
+		    System.out.println(pos[0] + " " + pos[1]);
+		}
+		
 		
 		System.out.println("");
 		
@@ -122,6 +128,78 @@ public class Reader {
 		
 		return null;
 		
+		
+	}
+	
+	public static Queue<int[]> queueSearch(String[][] maze){
+		Queue <int[]> toVisit = new ArrayDeque<>();
+		Queue<int[]> visited = new ArrayDeque<>();
+		
+		int startRow = 0;
+		int startCol = 0;
+		for(int i = 0; i < maze.length; i++) {
+			for(int j = 0; j < maze[0].length; j++) {
+				if(maze[i][j].equals("W")) {
+					startRow = i;
+					startCol = j;
+				}
+			}
+		}
+		
+		int[] start = new int[]{startRow, startCol};
+		toVisit.add(start);
+		
+		while(!toVisit.isEmpty()) {
+			
+			int[] current = toVisit.poll();
+			
+			int row = current[0];
+			int col = current[1];
+			
+			visited.add(current);
+			
+			//north
+			if(row-1 >= 0) {
+				 if(maze[row-1][col].equals(".") || maze[row-1][col].equals("$")) {
+		                toVisit.add(new int[]{row-1, col});
+		                if(maze[row-1][col].equals("$")) {
+		                	return visited;
+		                }
+		            }
+		        }
+		        
+		    //south
+		    if(row+1 < maze.length) {
+	            if(maze[row+1][col].equals(".") || maze[row+1][col].equals("$")) {
+	                toVisit.add(new int[]{row+1, col});
+	                if(maze[row+1][col].equals("$")) {
+	                	return visited;
+	                }
+	            }
+	        }
+		        
+		    //east
+	        if(col+1 < maze[0].length) {
+	            if(maze[row][col+1].equals(".") || maze[row][col+1].equals("$")) {
+	                toVisit.add(new int[]{row, col+1});
+	                if(maze[row][col+1].equals("$")) {
+	                	return visited;
+	                }
+	            }
+	        }
+		        
+		    //west
+	        if(col-1 >= 0) {
+	            if(maze[row][col-1].equals(".") || maze[row][col-1].equals("$")) {
+	                toVisit.add(new int[]{row, col-1});
+	                if(maze[row][col-1].equals("$")) {
+	                	return visited;
+	                }
+	            }
+	        }
+		}
+		
+		return visited;
 		
 	}
 
