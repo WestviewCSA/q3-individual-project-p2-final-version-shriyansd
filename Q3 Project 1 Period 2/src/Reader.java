@@ -1,4 +1,5 @@
 import java.io.File;
+import java.util.Stack;
 import java.io.FileNotFoundException;
 import java.util.ArrayDeque;
 import java.util.Queue;
@@ -23,6 +24,13 @@ public class Reader {
 		    System.out.println(pos[0] + " " + pos[1]);
 		}
 		
+		System.out.println("");
+		
+		Queue<int[]> visitedStack = stackSearch(maze);
+		while(!visitedStack.isEmpty()) {
+		    int[] pos = visitedStack.poll();
+		    System.out.println(pos[0] + " " + pos[1]);
+		}
 		
 		System.out.println("");
 		
@@ -135,6 +143,8 @@ public class Reader {
 		Queue <int[]> toVisit = new ArrayDeque<>();
 		Queue<int[]> visited = new ArrayDeque<>();
 		
+		boolean[][] enqueued = new boolean[maze.length][maze[0].length];
+		
 		int startRow = 0;
 		int startCol = 0;
 		for(int i = 0; i < maze.length; i++) {
@@ -148,6 +158,7 @@ public class Reader {
 		
 		int[] start = new int[]{startRow, startCol};
 		toVisit.add(start);
+		enqueued[startRow][startCol] = true;
 		
 		while(!toVisit.isEmpty()) {
 			
@@ -156,12 +167,15 @@ public class Reader {
 			int row = current[0];
 			int col = current[1];
 			
-			visited.add(current);
+			if(!maze[row][col].equals("W")) {
+				visited.add(current);
+			}
 			
 			//north
-			if(row-1 >= 0) {
+			if(row-1 >= 0 && !enqueued[row-1][col]) {
 				 if(maze[row-1][col].equals(".") || maze[row-1][col].equals("$")) {
 		                toVisit.add(new int[]{row-1, col});
+		                enqueued[row-1][col] = true;
 		                if(maze[row-1][col].equals("$")) {
 		                	return visited;
 		                }
@@ -169,9 +183,10 @@ public class Reader {
 		        }
 		        
 		    //south
-		    if(row+1 < maze.length) {
+		    if(row+1 < maze.length && !enqueued[row+1][col]) {
 	            if(maze[row+1][col].equals(".") || maze[row+1][col].equals("$")) {
 	                toVisit.add(new int[]{row+1, col});
+	                enqueued[row+1][col] = true;
 	                if(maze[row+1][col].equals("$")) {
 	                	return visited;
 	                }
@@ -179,9 +194,10 @@ public class Reader {
 	        }
 		        
 		    //east
-	        if(col+1 < maze[0].length) {
+	        if(col+1 < maze[0].length && !enqueued[row][col+1]) {
 	            if(maze[row][col+1].equals(".") || maze[row][col+1].equals("$")) {
 	                toVisit.add(new int[]{row, col+1});
+	                enqueued[row][col+1] = true;
 	                if(maze[row][col+1].equals("$")) {
 	                	return visited;
 	                }
@@ -189,9 +205,91 @@ public class Reader {
 	        }
 		        
 		    //west
-	        if(col-1 >= 0) {
+	        if(col-1 >= 0 && !enqueued[row][col-1]) {
 	            if(maze[row][col-1].equals(".") || maze[row][col-1].equals("$")) {
 	                toVisit.add(new int[]{row, col-1});
+	                enqueued[row][col-1] = true;
+	                if(maze[row][col-1].equals("$")) {
+	                	return visited;
+	                }
+	            }
+	        }
+		}
+		
+		return visited;
+		
+	}
+	
+	public static Queue<int[]> stackSearch(String[][] maze){
+		Stack<int[]> toVisit = new Stack<>();
+		Queue<int[]> visited = new ArrayDeque<>();
+		
+		boolean[][] enqueued = new boolean[maze.length][maze[0].length];
+		
+		int startRow = 0;
+		int startCol = 0;
+		for(int i = 0; i < maze.length; i++) {
+			for(int j = 0; j < maze[0].length; j++) {
+				if(maze[i][j].equals("W")) {
+					startRow = i;
+					startCol = j;
+				}
+			}
+		}
+		
+		int[] start = new int[]{startRow, startCol};
+		toVisit.add(start);
+		enqueued[startRow][startCol] = true;
+		
+		while(!toVisit.isEmpty()) {
+			
+			int[] current = toVisit.pop();
+			
+			int row = current[0];
+			int col = current[1];
+			
+			if(!maze[row][col].equals("W")) {
+				visited.add(current);
+			}
+			
+			//north
+			if(row-1 >= 0 && !enqueued[row-1][col]) {
+				 if(maze[row-1][col].equals(".") || maze[row-1][col].equals("$")) {
+		                toVisit.push(new int[]{row-1, col});
+		                enqueued[row-1][col] = true;
+		                if(maze[row-1][col].equals("$")) {
+		                	return visited;
+		                }
+		            }
+		        }
+		        
+		    //south
+		    if(row+1 < maze.length && !enqueued[row+1][col]) {
+	            if(maze[row+1][col].equals(".") || maze[row+1][col].equals("$")) {
+	                toVisit.push(new int[]{row+1, col});
+	                enqueued[row+1][col] = true;
+	                if(maze[row+1][col].equals("$")) {
+	                	return visited;
+	                }
+	            }
+	        }
+		        
+		    //east
+	        if(col+1 < maze[0].length && !enqueued[row][col+1]) {
+	            if(maze[row][col+1].equals(".") || maze[row][col+1].equals("$")) {
+	                toVisit.push(new int[]{row, col+1});
+	                enqueued[row][col+1] = true;
+	                if(maze[row][col+1].equals("$")) {
+	                	return visited;
+	                }
+	            }
+	        }
+		        
+		    //west
+	        if(col-1 >= 0 && !enqueued[row][col-1]) {
+	            if(maze[row][col-1].equals(".") || maze[row][col-1].equals("$")) {
+	                toVisit.push(new int[]{row, col-1});
+	                enqueued[row][col-1] = true;
 	                if(maze[row][col-1].equals("$")) {
 	                	return visited;
 	                }
