@@ -10,21 +10,28 @@ public class Reader {
 
 	public static void main(String[] args) {
 		
-		String[][][] maze = getText("Easy_Map_2");
-		for(int i = 0; i < maze[0].length; i++) {
-		    for(int j = 0; j < maze[0][0].length; j++) {
-		        System.out.print(maze[0][i][j]);
-		    }
-		    System.out.println();
+		String[][][] maze = getText("MultiMazeText");
+		for(int level = 0; level < maze.length; level++) {
+			for(int i = 0; i < maze[level].length; i++) {
+			    for(int j = 0; j < maze[level][0].length; j++) {
+			        System.out.print(maze[level][i][j]);
+			    }
+			    System.out.println();
+			}
 		}
+		
+		
+		
 	
 		Queue<int[]> visited = queueSearch(maze);
 		while(!visited.isEmpty()) {
 		    int[] pos = visited.poll();
-		    System.out.println(pos[0] + " " + pos[1]);
+		    System.out.println(pos[0] + " " + pos[1] + " " + pos[2]);
 		}
 		
 		System.out.println("");
+		
+		
 		
 		Queue<int[]> visitedStack = stackSearch(maze);
 		while(!visitedStack.isEmpty()) {
@@ -33,16 +40,19 @@ public class Reader {
 		}
 	
 		System.out.println("");
-	
-		String[][][] n = getCords("Easy_Map_Coordinates");
 		
-		for(int i = 0; i < n[0].length; i++) {
-			for(int j = 0; j < n[0][0].length; j++) {
-				System.out.print(n[0][i][j]);
-			}
-			System.out.println();
-		}
+		
 	
+		String[][][] n = getCords("MultiMazeCords");
+		
+		for(int level = 0; level < n.length; level++) {
+			for(int i = 0; i < n[level].length; i++) {
+			    for(int j = 0; j < n[level][0].length; j++) {
+			        System.out.print(n[level][i][j]);
+			    }
+			    System.out.println();
+			}
+		}
 		
 
 	}
@@ -151,7 +161,7 @@ public class Reader {
 		Queue <int[]> toVisit = new ArrayDeque<>();
 		Queue<int[]> visited = new ArrayDeque<>();
 		
-		boolean[][] enqueued = new boolean[maze[0].length][maze[0][0].length];
+		boolean[][][] enqueued = new boolean[maze.length][maze[0].length][maze[0][0].length];
 		
 		int startRow = 0;
 		int startCol = 0;
@@ -164,60 +174,77 @@ public class Reader {
 			}
 		}
 		
-		int[] start = new int[]{startRow, startCol};
+		int[] start = new int[]{startRow, startCol, 0};
 		toVisit.add(start);
-		enqueued[startRow][startCol] = true;
+		enqueued[0][startRow][startCol] = true;
 		
 		while(!toVisit.isEmpty()) {
 			
 			int[] current = toVisit.poll();
 			
+			
 			int row = current[0];
 			int col = current[1];
+			int level = current[2];
 			
-			if(!maze[0][row][col].equals("W")) {
+			if(!maze[level][row][col].equals("W")) {
 				visited.add(current);
 			}
 			
+			if(maze[level][row][col].equals("|")) {
+	            int nextLevel = level + 1;
+	            for(int i = 0; i < maze[nextLevel].length; i++) {
+	                for(int j = 0; j < maze[nextLevel][0].length; j++) {
+	                    if(maze[nextLevel][i][j].equals("W")) {
+	                        if(!enqueued[nextLevel][i][j]) {
+	                            toVisit.add(new int[]{i, j, nextLevel});
+	                            enqueued[nextLevel][i][j] = true;
+	                        }
+	                    }
+	                }
+	            }
+	            continue;
+			}
+			
 			//north
-			if(row-1 >= 0 && !enqueued[row-1][col]) {
-				 if(maze[0][row-1][col].equals(".") || maze[0][row-1][col].equals("$")) {
-		                toVisit.add(new int[]{row-1, col});
-		                enqueued[row-1][col] = true;
-		                if(maze[0][row-1][col].equals("$")) {
+			if(row-1 >= 0 && !enqueued[level][row-1][col]) {
+				 if(maze[level][row-1][col].equals(".") || maze[level][row-1][col].equals("$") || maze[level][row-1][col].equals("|")) {
+		                toVisit.add(new int[]{row-1, col, level});
+		                enqueued[level][row-1][col] = true;
+		                if(maze[level][row-1][col].equals("$")) {
 		                	return visited;
 		                }
 		            }
 		        }
 		        
 		    //south
-		    if(row+1 < maze[0].length && !enqueued[row+1][col]) {
-	            if(maze[0][row+1][col].equals(".") || maze[0][row+1][col].equals("$")) {
-	                toVisit.add(new int[]{row+1, col});
-	                enqueued[row+1][col] = true;
-	                if(maze[0][row+1][col].equals("$")) {
+		    if(row+1 < maze[level].length && !enqueued[level][row+1][col]) {
+	            if(maze[level][row+1][col].equals(".") || maze[level][row+1][col].equals("$") || maze[level][row+1][col].equals("|")) {
+	                toVisit.add(new int[]{row+1, col, level});
+	                enqueued[level][row+1][col] = true;
+	                if(maze[level][row+1][col].equals("$")) {
 	                	return visited;
 	                }
 	            }
 	        }
 		        
 		    //east
-	        if(col+1 < maze[0][0].length && !enqueued[row][col+1]) {
-	            if(maze[0][row][col+1].equals(".") || maze[0][row][col+1].equals("$")) {
-	                toVisit.add(new int[]{row, col+1});
-	                enqueued[row][col+1] = true;
-	                if(maze[0][row][col+1].equals("$")) {
+	        if(col+1 < maze[level][0].length && !enqueued[level][row][col+1]) {
+	            if(maze[level][row][col+1].equals(".") || maze[level][row][col+1].equals("$") || maze[level][row][col+1].equals("|")) {
+	                toVisit.add(new int[]{row, col+1, level});
+	                enqueued[level][row][col+1] = true;
+	                if(maze[level][row][col+1].equals("$")) {
 	                	return visited;
 	                }
 	            }
 	        }
 		        
 		    //west
-	        if(col-1 >= 0 && !enqueued[row][col-1]) {
-	            if(maze[0][row][col-1].equals(".") || maze[0][row][col-1].equals("$")) {
-	                toVisit.add(new int[]{row, col-1});
-	                enqueued[row][col-1] = true;
-	                if(maze[0][row][col-1].equals("$")) {
+	        if(col-1 >= 0 && !enqueued[level][row][col-1]) {
+	            if(maze[level][row][col-1].equals(".") || maze[level][row][col-1].equals("$") || maze[level][row][col-1].equals("|")) {
+	                toVisit.add(new int[]{row, col-1, level});
+	                enqueued[level][row][col-1] = true;
+	                if(maze[level][row][col-1].equals("$")) {
 	                	return visited;
 	                }
 	            }
@@ -232,7 +259,7 @@ public class Reader {
 		Stack<int[]> toVisit = new Stack<>();
 		Queue<int[]> visited = new ArrayDeque<>();
 		
-		boolean[][] enqueued = new boolean[maze[0].length][maze[0][0].length];
+		boolean[][][] enqueued = new boolean[maze.length][maze[0].length][maze[0][0].length];
 		
 		int startRow = 0;
 		int startCol = 0;
@@ -245,9 +272,9 @@ public class Reader {
 			}
 		}
 		
-		int[] start = new int[]{startRow, startCol};
-		toVisit.add(start);
-		enqueued[startRow][startCol] = true;
+		int[] start = new int[]{startRow, startCol, 0};
+		toVisit.push(start);
+		enqueued[0][startRow][startCol] = true;
 		
 		while(!toVisit.isEmpty()) {
 			
@@ -255,50 +282,53 @@ public class Reader {
 			
 			int row = current[0];
 			int col = current[1];
+			int level = current[2];
 			
-			if(!maze[0][row][col].equals("W")) {
+			if(!maze[level][row][col].equals("W")) {
 				visited.add(current);
 			}
 			
+			
+			
 			//north
-			if(row-1 >= 0 && !enqueued[row-1][col]) {
-				 if(maze[0][row-1][col].equals(".") || maze[0][row-1][col].equals("$")) {
-		                toVisit.push(new int[]{row-1, col});
-		                enqueued[row-1][col] = true;
-		                if(maze[0][row-1][col].equals("$")) {
+			if(row-1 >= 0 && !enqueued[level][row-1][col]) {
+				 if(maze[level][row-1][col].equals(".") || maze[level][row-1][col].equals("$") || maze[level][row-1][col].equals("|")) {
+		                toVisit.push(new int[]{row-1, col, level});
+		                enqueued[level][row-1][col] = true;
+		                if(maze[level][row-1][col].equals("$")) {
 		                	return visited;
 		                }
 		            }
 		        }
 		        
 		    //south
-		    if(row+1 < maze[0].length && !enqueued[row+1][col]) {
-	            if(maze[0][row+1][col].equals(".") || maze[0][row+1][col].equals("$")) {
-	                toVisit.push(new int[]{row+1, col});
-	                enqueued[row+1][col] = true;
-	                if(maze[0][row+1][col].equals("$")) {
+		    if(row+1 < maze[level].length && !enqueued[level][row+1][col]) {
+	            if(maze[level][row+1][col].equals(".") || maze[level][row+1][col].equals("$") || maze[level][row+1][col].equals("|")) {
+	                toVisit.push(new int[]{row+1, col, level});
+	                enqueued[level][row+1][col] = true;
+	                if(maze[level][row+1][col].equals("$")) {
 	                	return visited;
 	                }
 	            }
 	        }
 		        
 		    //east
-	        if(col+1 < maze[0][0].length && !enqueued[row][col+1]) {
-	            if(maze[0][row][col+1].equals(".") || maze[0][row][col+1].equals("$")) {
-	                toVisit.push(new int[]{row, col+1});
-	                enqueued[row][col+1] = true;
-	                if(maze[0][row][col+1].equals("$")) {
+	        if(col+1 < maze[level][0].length && !enqueued[level][row][col+1]) {
+	            if(maze[level][row][col+1].equals(".") || maze[level][row][col+1].equals("$") || maze[level][row][col+1].equals("|")) {
+	                toVisit.push(new int[]{row, col+1, level});
+	                enqueued[level][row][col+1] = true;
+	                if(maze[level][row][col+1].equals("$")) {
 	                	return visited;
 	                }
 	            }
 	        }
 		        
 		    //west
-	        if(col-1 >= 0 && !enqueued[row][col-1]) {
-	            if(maze[0][row][col-1].equals(".") || maze[0][row][col-1].equals("$")) {
-	                toVisit.push(new int[]{row, col-1});
-	                enqueued[row][col-1] = true;
-	                if(maze[0][row][col-1].equals("$")) {
+	        if(col-1 >= 0 && !enqueued[level][row][col-1]) {
+	            if(maze[level][row][col-1].equals(".") || maze[level][row][col-1].equals("$") || maze[level][row][col-1].equals("|")) {
+	                toVisit.push(new int[]{row, col-1, level});
+	                enqueued[level][row][col-1] = true;
+	                if(maze[level][row][col-1].equals("$")) {
 	                	return visited;
 	                }
 	            }
