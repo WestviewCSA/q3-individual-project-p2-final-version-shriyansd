@@ -10,7 +10,7 @@ public class Reader {
 
 	public static void main(String[] args) {
 		
-		String[][][] maze = getText("MultiMazeText");
+		String[][][] maze = getText("ThreeMazeText");
 		for(int level = 0; level < maze.length; level++) {
 			for(int i = 0; i < maze[level].length; i++) {
 			    for(int j = 0; j < maze[level][0].length; j++) {
@@ -36,14 +36,14 @@ public class Reader {
 		Queue<int[]> visitedStack = stackSearch(maze);
 		while(!visitedStack.isEmpty()) {
 		    int[] pos = visitedStack.poll();
-		    System.out.println(pos[0] + " " + pos[1]);
+		    System.out.println(pos[0] + " " + pos[1] + " " + pos[2]);
 		}
 	
 		System.out.println("");
 		
 		
-	
-		String[][][] n = getCords("MultiMazeCords");
+	/*
+		String[][][] n = getCords("ThreeMazeCords");
 		
 		for(int level = 0; level < n.length; level++) {
 			for(int i = 0; i < n[level].length; i++) {
@@ -53,6 +53,8 @@ public class Reader {
 			    System.out.println();
 			}
 		}
+		
+	*/
 		
 
 	}
@@ -215,7 +217,7 @@ public class Reader {
 		                	return visited;
 		                }
 		            }
-		        }
+		    }
 		        
 		    //south
 		    if(row+1 < maze[level].length && !enqueued[level][row+1][col]) {
@@ -288,6 +290,20 @@ public class Reader {
 				visited.add(current);
 			}
 			
+			if(maze[level][row][col].equals("|")) {
+	            int nextLevel = level + 1;
+	            for(int i = 0; i < maze[nextLevel].length; i++) {
+	                for(int j = 0; j < maze[nextLevel][0].length; j++) {
+	                    if(maze[nextLevel][i][j].equals("W")) {
+	                        if(!enqueued[nextLevel][i][j]) {
+	                            toVisit.add(new int[]{i, j, nextLevel});
+	                            enqueued[nextLevel][i][j] = true;
+	                        }
+	                    }
+	                }
+	            }
+	            continue;
+			}
 			
 			
 			//north
