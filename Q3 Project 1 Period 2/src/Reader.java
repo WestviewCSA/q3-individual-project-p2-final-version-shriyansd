@@ -10,7 +10,10 @@ public class Reader {
 
 	public static void main(String[] args) {
 		
+		
 		String[][][] maze = getText("ThreeMazeText");
+		
+		/*
 		for(int level = 0; level < maze.length; level++) {
 			for(int i = 0; i < maze[level].length; i++) {
 			    for(int j = 0; j < maze[level][0].length; j++) {
@@ -19,30 +22,39 @@ public class Reader {
 			    System.out.println();
 			}
 		}
+		*/
 		
-		
-		
+		System.out.println("----Queue Search----");
+
 	
 		Queue<int[]> visited = queueSearch(maze);
-		while(!visited.isEmpty()) {
-		    int[] pos = visited.poll();
-		    System.out.println(pos[0] + " " + pos[1] + " " + pos[2]);
+		for(int level = 0; level < maze.length; level++) {
+		    for(int i = 0; i < maze[level].length; i++) {
+		        for(int j = 0; j < maze[level][0].length; j++) {
+		            System.out.print(maze[level][i][j]);
+		        }
+		        System.out.println();
+		    }
 		}
 		
-		System.out.println("");
+		System.out.println("----Stack Search----");
 		
-		
-		
-		Queue<int[]> visitedStack = stackSearch(maze);
-		while(!visitedStack.isEmpty()) {
-		    int[] pos = visitedStack.poll();
-		    System.out.println(pos[0] + " " + pos[1] + " " + pos[2]);
+	
+		String[][][] maze2 = getText("ThreeMazeText");
+		Queue<int[]> visitedStack = stackSearch(maze2);
+		for(int level = 0; level < maze2.length; level++) {
+		    for(int i = 0; i < maze2[level].length; i++) {
+		        for(int j = 0; j < maze2[level][0].length; j++) {
+		            System.out.print(maze2[level][i][j]);
+		        }
+		        System.out.println();
+		    }
 		}
 	
-		System.out.println("");
+		/*
 		
 		
-	/*
+	
 		String[][][] n = getCords("ThreeMazeCords");
 		
 		for(int level = 0; level < n.length; level++) {
@@ -165,6 +177,10 @@ public class Reader {
 		
 		boolean[][][] enqueued = new boolean[maze.length][maze[0].length][maze[0][0].length];
 		
+		int[][][] parentRow = new int[maze.length][maze[0].length][maze[0][0].length];
+	    int[][][] parentCol = new int[maze.length][maze[0].length][maze[0][0].length];
+	    int[][][] parentLevel = new int[maze.length][maze[0].length][maze[0][0].length]; 
+		
 		int startRow = 0;
 		int startCol = 0;
 		for(int i = 0; i < maze[0].length; i++) {
@@ -201,6 +217,9 @@ public class Reader {
 	                        if(!enqueued[nextLevel][i][j]) {
 	                            toVisit.add(new int[]{i, j, nextLevel});
 	                            enqueued[nextLevel][i][j] = true;
+	                            parentRow[nextLevel][i][j] = row;
+	                            parentCol[nextLevel][i][j] = col;
+	                            parentLevel[nextLevel][i][j] = level;
 	                        }
 	                    }
 	                }
@@ -213,7 +232,11 @@ public class Reader {
 				 if(maze[level][row-1][col].equals(".") || maze[level][row-1][col].equals("$") || maze[level][row-1][col].equals("|")) {
 		                toVisit.add(new int[]{row-1, col, level});
 		                enqueued[level][row-1][col] = true;
+		                parentRow[level][row-1][col] = row;
+		                parentCol[level][row-1][col] = col;
+		                parentLevel[level][row-1][col] = level;
 		                if(maze[level][row-1][col].equals("$")) {
+		                	tracePath(maze, parentRow, parentCol, parentLevel, row-1, col, level);
 		                	return visited;
 		                }
 		            }
@@ -224,7 +247,11 @@ public class Reader {
 	            if(maze[level][row+1][col].equals(".") || maze[level][row+1][col].equals("$") || maze[level][row+1][col].equals("|")) {
 	                toVisit.add(new int[]{row+1, col, level});
 	                enqueued[level][row+1][col] = true;
+	                parentRow[level][row+1][col] = row;
+	                parentCol[level][row+1][col] = col;
+	                parentLevel[level][row+1][col] = level;
 	                if(maze[level][row+1][col].equals("$")) {
+	                	tracePath(maze, parentRow, parentCol, parentLevel, row+1, col, level);
 	                	return visited;
 	                }
 	            }
@@ -235,7 +262,11 @@ public class Reader {
 	            if(maze[level][row][col+1].equals(".") || maze[level][row][col+1].equals("$") || maze[level][row][col+1].equals("|")) {
 	                toVisit.add(new int[]{row, col+1, level});
 	                enqueued[level][row][col+1] = true;
+	                parentRow[level][row][col+1] = row;
+	                parentCol[level][row][col+1] = col;
+	                parentLevel[level][row][col+1] = level;
 	                if(maze[level][row][col+1].equals("$")) {
+	                	tracePath(maze, parentRow, parentCol, parentLevel, row, col+1, level);
 	                	return visited;
 	                }
 	            }
@@ -246,7 +277,11 @@ public class Reader {
 	            if(maze[level][row][col-1].equals(".") || maze[level][row][col-1].equals("$") || maze[level][row][col-1].equals("|")) {
 	                toVisit.add(new int[]{row, col-1, level});
 	                enqueued[level][row][col-1] = true;
+	                parentRow[level][row][col-1] = row;
+	                parentCol[level][row][col-1] = col;
+	                parentLevel[level][row][col-1] = level;
 	                if(maze[level][row][col-1].equals("$")) {
+	                	tracePath(maze, parentRow, parentCol, parentLevel, row, col-1, level);
 	                	return visited;
 	                }
 	            }
@@ -262,6 +297,10 @@ public class Reader {
 		Queue<int[]> visited = new ArrayDeque<>();
 		
 		boolean[][][] enqueued = new boolean[maze.length][maze[0].length][maze[0][0].length];
+		
+		int[][][] parentRow = new int[maze.length][maze[0].length][maze[0][0].length];
+		int[][][] parentCol = new int[maze.length][maze[0].length][maze[0][0].length];
+		int[][][] parentLevel = new int[maze.length][maze[0].length][maze[0][0].length];
 		
 		int startRow = 0;
 		int startCol = 0;
@@ -298,6 +337,9 @@ public class Reader {
 	                        if(!enqueued[nextLevel][i][j]) {
 	                            toVisit.add(new int[]{i, j, nextLevel});
 	                            enqueued[nextLevel][i][j] = true;
+	                            parentRow[nextLevel][i][j] = row;
+	                            parentCol[nextLevel][i][j] = col;
+	                            parentLevel[nextLevel][i][j] = level;
 	                        }
 	                    }
 	                }
@@ -311,7 +353,11 @@ public class Reader {
 				 if(maze[level][row-1][col].equals(".") || maze[level][row-1][col].equals("$") || maze[level][row-1][col].equals("|")) {
 		                toVisit.push(new int[]{row-1, col, level});
 		                enqueued[level][row-1][col] = true;
+		                parentRow[level][row-1][col] = row;
+		                parentCol[level][row-1][col] = col;
+		                parentLevel[level][row-1][col] = level;
 		                if(maze[level][row-1][col].equals("$")) {
+		                	tracePath(maze, parentRow, parentCol, parentLevel, row-1, col, level);
 		                	return visited;
 		                }
 		            }
@@ -322,7 +368,11 @@ public class Reader {
 	            if(maze[level][row+1][col].equals(".") || maze[level][row+1][col].equals("$") || maze[level][row+1][col].equals("|")) {
 	                toVisit.push(new int[]{row+1, col, level});
 	                enqueued[level][row+1][col] = true;
+	                parentRow[level][row+1][col] = row;
+	                parentCol[level][row+1][col] = col;
+	                parentLevel[level][row+1][col] = level;
 	                if(maze[level][row+1][col].equals("$")) {
+	                	tracePath(maze, parentRow, parentCol, parentLevel, row+1, col, level);
 	                	return visited;
 	                }
 	            }
@@ -333,7 +383,11 @@ public class Reader {
 	            if(maze[level][row][col+1].equals(".") || maze[level][row][col+1].equals("$") || maze[level][row][col+1].equals("|")) {
 	                toVisit.push(new int[]{row, col+1, level});
 	                enqueued[level][row][col+1] = true;
+	                parentRow[level][row][col+1] = row;
+	                parentCol[level][row][col+1] = col;
+	                parentLevel[level][row][col+1] = level;
 	                if(maze[level][row][col+1].equals("$")) {
+	                	tracePath(maze, parentRow, parentCol, parentLevel, row, col+1, level);
 	                	return visited;
 	                }
 	            }
@@ -344,7 +398,11 @@ public class Reader {
 	            if(maze[level][row][col-1].equals(".") || maze[level][row][col-1].equals("$") || maze[level][row][col-1].equals("|")) {
 	                toVisit.push(new int[]{row, col-1, level});
 	                enqueued[level][row][col-1] = true;
+	                parentRow[level][row][col-1] = row;
+	                parentCol[level][row][col-1] = col;
+	                parentLevel[level][row][col-1] = level;
 	                if(maze[level][row][col-1].equals("$")) {
+	                	tracePath(maze, parentRow, parentCol, parentLevel, row, col-1, level);
 	                	return visited;
 	                }
 	            }
@@ -353,6 +411,29 @@ public class Reader {
 		
 		return visited;
 		
+	}
+	
+	public static void tracePath(String[][][] maze, int[][][] parentRow, int[][][] parentCol, int[][][] parentLevel, int dollarRow, int dollarCol, int dollarLevel) {
+		int currentRow = dollarRow;
+		int currentCol = dollarCol;
+		int currentLevel = dollarLevel;
+		
+		while(true) {
+			 if(!maze[currentLevel][currentRow][currentCol].equals("W") && !maze[currentLevel][currentRow][currentCol].equals("$")) {
+			        maze[currentLevel][currentRow][currentCol] = "+";
+			 }
+			 
+			 if(maze[currentLevel][currentRow][currentCol].equals("W") && currentLevel == 0) {
+		            break;
+		     }
+			 
+			 int tempRow = parentRow[currentLevel][currentRow][currentCol];
+		     int tempCol = parentCol[currentLevel][currentRow][currentCol];
+		     int tempLevel = parentLevel[currentLevel][currentRow][currentCol];
+		     currentRow = tempRow;
+		     currentCol = tempCol;
+		     currentLevel = tempLevel;
+		}
 	}
 
 }
