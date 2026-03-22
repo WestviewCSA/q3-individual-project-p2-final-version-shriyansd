@@ -31,9 +31,24 @@ public class MazeOutput {
         }
     }
 
-    public static void printCoordinates(Queue<int[]> visited) {
+    public static void printCoordinates(Queue<int[]> visited, String[][][] maze) {
         for(int[] pos : visited) {
-            System.out.println("+ " + pos[0] + " " + pos[1] + " " + pos[2]);
+        	if(maze[pos[2]][pos[0]][pos[1]].equals("+")) {
+                System.out.println("+ " + pos[0] + " " + pos[1] + " " + pos[2]);
+            }
         }
     }
-}
+    
+    public static boolean noSolution(String[][][] maze) {
+        for(int level = 0; level < maze.length; level++) {
+            for(int i = 0; i < maze[level].length; i++) {
+                for(int j = 0; j < maze[level][0].length; j++) {
+                    if(maze[level][i][j].equals("+")) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+}	
