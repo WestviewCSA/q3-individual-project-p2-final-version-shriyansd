@@ -8,9 +8,8 @@ import java.util.Scanner;
 public class p1 {
 	
 
-	public static void main(String[] args) {
-		
-		// set all flags to false by default
+	public static void main(String[] args) throws IllegalCommandLineInputsException {
+
         boolean useStack = false;
         boolean useQueue = false;
         boolean useOpt = false;
@@ -39,24 +38,32 @@ public class p1 {
         }
         
         if(!useStack && !useQueue && !useOpt) {
-            System.out.println("Error: exactly one of --Stack, --Queue, or --Opt must be set");
-            System.exit(-1);
+        	throw new IllegalCommandLineInputsException("Error: exactly one of --Stack, --Queue, or --Opt must be set");
         }
         
         if((useStack && useQueue) || (useStack && useOpt) || (useQueue && useOpt)) {
-            System.out.println("Error: exactly one of --Stack, --Queue, or --Opt must be set");
-            System.exit(-1);
+        	throw new IllegalCommandLineInputsException("Error: exactly one of --Stack, --Queue, or --Opt must be set");
         }
         
         String mapFile = args[args.length - 1];
         
-        // read the maze using the correct reader
-        String[][][] maze;
-        if(inCoordinate) {
-            maze = MazeReader.getCords(mapFile);
-        } else {
-            maze = MazeReader.getText(mapFile);
-        }
+        String[][][] maze = null;
+        try {
+        	if(inCoordinate) {
+                maze = MazeReader.getCords(mapFile);
+            } else {
+                maze = MazeReader.getText(mapFile);
+            }
+        } catch (IncorrectMapFormatException e) {
+            System.out.println(e.getMessage());
+            System.exit(-1);
+        } catch (IllegalMapCharacterException e) {
+            System.out.println(e.getMessage());
+            System.exit(-1);
+        } catch (IncompleteMapException e) {
+            System.out.println(e.getMessage());
+            System.exit(-1);
+        } 
         
         double startTime = System.currentTimeMillis();
         
@@ -67,10 +74,14 @@ public class p1 {
         
         double endTime = System.currentTimeMillis();
         
-        if(outCoordinate) {
-            MazeOutput.printCoordinates(visited, maze);
+        if(MazeOutput.noSolution(maze)) {
+            System.out.println("The Wolverine Store is closed.");
         } else {
-            MazeOutput.printTextMap(maze);
+            if(outCoordinate) {
+                MazeOutput.printCoordinates(visited, maze);
+            } else {
+                MazeOutput.printTextMap(maze);
+            }
         }
         
         if(useTime) {
