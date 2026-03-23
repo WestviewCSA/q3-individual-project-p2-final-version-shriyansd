@@ -3,6 +3,10 @@ import java.util.Queue;
 import java.util.Stack;
 
 public class MazeSearch {
+	
+	public static Queue<int[]> optSearch(String[][][] maze) {
+	    return queueSearch(maze);
+	}
 
     public static Queue<int[]> queueSearch(String[][][] maze) {
         Queue<int[]> toVisit = new ArrayDeque<>();
@@ -204,7 +208,4 @@ public class MazeSearch {
         return visited;
     }
 
-    public static Queue<int[]> optSearch(String[][][] maze) {
-        return queueSearch(maze);
-    }
 }
