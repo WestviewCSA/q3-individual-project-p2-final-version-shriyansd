@@ -36,9 +36,6 @@ public class MazeReader {
                     throw new IllegalMapCharacterException("Illegal character found in map");
                 }
                 
-                if(line.length() > cols) {
-                    throw new IncompleteMapException("Line is too long");
-                }
                 
                 for(int col = 0; col < line.length(); col++) {
                     maze[currentLevel][currentRow][col] = String.valueOf(line.charAt(col));
